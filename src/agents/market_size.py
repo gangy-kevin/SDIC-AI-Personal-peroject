@@ -4,25 +4,18 @@
 - 국내 상장사: DART API / 해외 기업: Claude 웹서치
 """
 from dataclasses import dataclass, field
+from src.agents.base import BaseAgentResult
 from src.tools.router import route_company_data
 from src.tools.web_search import search_with_claude
 from src.tools.source_filter import calculate_score, format_score_badge
 
 
 @dataclass
-class MarketSizeResult:
+class MarketSizeResult(BaseAgentResult):
     agent: str = "market_size"
-    company_name: str = ""
-    industry: str = ""
-    year: str = ""
     market_size: str = ""           # 시장 규모 수치
     cagr: str = ""                  # 연평균 성장률
     key_segments: list[str] = field(default_factory=list)   # 주요 세그먼트
-    summary: str = ""               # 전체 요약 텍스트
-    source_urls: list[str] = field(default_factory=list)
-    score_badge: str = ""           # "🟢 82점 (A등급)"
-    score_total: int = 0
-    error: str = ""
 
 
 def run_market_size_agent(

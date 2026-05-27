@@ -2,25 +2,18 @@
 트렌드 에이전트
 - 산업 기술 트렌드, 소비자 변화, 거시 환경(PESTLE) 조사
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from src.agents.base import BaseAgentResult
 from src.tools.web_search import search_with_claude
 from src.tools.source_filter import calculate_score, format_score_badge
 
 
 @dataclass
-class TrendResult:
+class TrendResult(BaseAgentResult):
     agent: str = "trend"
-    company_name: str = ""
-    industry: str = ""
-    year: str = ""
     tech_trends: str = ""           # 기술 트렌드
     consumer_trends: str = ""       # 소비자/수요 트렌드
     macro_trends: str = ""          # 거시 환경 트렌드 (PESTLE)
-    summary: str = ""
-    source_urls: list[str] = field(default_factory=list)
-    score_badge: str = ""
-    score_total: int = 0
-    error: str = ""
 
 
 def run_trend_agent(

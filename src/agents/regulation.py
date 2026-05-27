@@ -2,25 +2,18 @@
 규제 에이전트
 - 산업 관련 국내외 규제 동향, 정책 변화, 인증 요건 조사
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from src.agents.base import BaseAgentResult
 from src.tools.web_search import search_with_claude
 from src.tools.source_filter import calculate_score, format_score_badge
 
 
 @dataclass
-class RegulationResult:
+class RegulationResult(BaseAgentResult):
     agent: str = "regulation"
-    company_name: str = ""
-    industry: str = ""
-    year: str = ""
     domestic_regulations: str = ""      # 국내 규제 현황
     international_regulations: str = "" # 해외 규제 현황
     upcoming_changes: str = ""          # 예정된 규제 변화
-    summary: str = ""
-    source_urls: list[str] = field(default_factory=list)
-    score_badge: str = ""
-    score_total: int = 0
-    error: str = ""
 
 
 def run_regulation_agent(

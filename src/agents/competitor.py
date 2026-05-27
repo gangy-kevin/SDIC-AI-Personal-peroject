@@ -4,25 +4,18 @@
 - 국내 상장사: DART API / 해외 기업: Claude 웹서치
 """
 from dataclasses import dataclass, field
+from src.agents.base import BaseAgentResult
 from src.tools.router import route_company_data
 from src.tools.web_search import search_with_claude
 from src.tools.source_filter import calculate_score, format_score_badge
 
 
 @dataclass
-class CompetitorResult:
+class CompetitorResult(BaseAgentResult):
     agent: str = "competitor"
-    company_name: str = ""
-    industry: str = ""
-    year: str = ""
     competitors: list[str] = field(default_factory=list)    # 주요 경쟁사 목록
     market_share: str = ""          # 시장 점유율 정보
     competitive_edge: str = ""      # 경쟁 우위 요소
-    summary: str = ""
-    source_urls: list[str] = field(default_factory=list)
-    score_badge: str = ""
-    score_total: int = 0
-    error: str = ""
 
 
 def run_competitor_agent(

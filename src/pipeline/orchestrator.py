@@ -16,10 +16,19 @@ from typing import TypedDict, Annotated
 
 from langgraph.graph import StateGraph, START, END
 
-from src.agents.market_size import run_market_size_agent, MarketSizeResult
-from src.agents.competitor import run_competitor_agent, CompetitorResult
-from src.agents.regulation import run_regulation_agent, RegulationResult
-from src.agents.trend import run_trend_agent, TrendResult
+from src.agents.market_size import run_market_size_agent
+from src.agents.competitor import run_competitor_agent
+from src.agents.regulation import run_regulation_agent
+from src.agents.trend import run_trend_agent
+
+
+# ── 에이전트 함수 등록표 ──────────────────────────────────
+_AGENT_FUNCTIONS = {
+    "market_size": run_market_size_agent,
+    "competitor":  run_competitor_agent,
+    "regulation":  run_regulation_agent,
+    "trend":       run_trend_agent,
+}
 
 
 # ── 공유 상태 정의 ────────────────────────────────────────
@@ -37,46 +46,20 @@ class ResearchState(TypedDict):
     aggregated: dict
 
 
-# ── 에이전트 노드 함수 ────────────────────────────────────
+# ── 에이전트 노드 팩토리 ──────────────────────────────────
 
-def market_size_node(state: ResearchState) -> dict:
-    result = run_market_size_agent(
-        company_name=state["company_name"],
-        industry=state["industry"],
-        core_question=state["core_question"],
-        year=state["year"],
-    )
-    return {"agent_results": [{"type": "market_size", "data": result}]}
-
-
-def competitor_node(state: ResearchState) -> dict:
-    result = run_competitor_agent(
-        company_name=state["company_name"],
-        industry=state["industry"],
-        core_question=state["core_question"],
-        year=state["year"],
-    )
-    return {"agent_results": [{"type": "competitor", "data": result}]}
-
-
-def regulation_node(state: ResearchState) -> dict:
-    result = run_regulation_agent(
-        company_name=state["company_name"],
-        industry=state["industry"],
-        core_question=state["core_question"],
-        year=state["year"],
-    )
-    return {"agent_results": [{"type": "regulation", "data": result}]}
-
-
-def trend_node(state: ResearchState) -> dict:
-    result = run_trend_agent(
-        company_name=state["company_name"],
-        industry=state["industry"],
-        core_question=state["core_question"],
-        year=state["year"],
-    )
-    return {"agent_results": [{"type": "trend", "data": result}]}
+def _make_agent_node(agent_type: str, fn):
+    """에이전트 타입과 실행 함수를 받아 LangGraph 노드 함수를 생성"""
+    def node(state: ResearchState) -> dict:
+        result = fn(
+            company_name=state["company_name"],
+            industry=state["industry"],
+            core_question=state["core_question"],
+            year=state["year"],
+        )
+        return {"agent_results": [{"type": agent_type, "data": result}]}
+    node.__name__ = f"{agent_type}_node"
+    return node
 
 
 # ── 통합 노드 ─────────────────────────────────────────────
@@ -144,26 +127,13 @@ def build_research_graph() -> StateGraph:
     """4개 에이전트 병렬 실행 그래프 생성"""
     builder = StateGraph(ResearchState)
 
-    # 에이전트 노드 등록
-    builder.add_node("market_size", market_size_node)
-    builder.add_node("competitor", competitor_node)
-    builder.add_node("regulation", regulation_node)
-    builder.add_node("trend", trend_node)
+    # 에이전트 노드 등록 및 엣지 연결 (_AGENT_FUNCTIONS 기준으로 일괄 처리)
+    for agent_type, fn in _AGENT_FUNCTIONS.items():
+        builder.add_node(agent_type, _make_agent_node(agent_type, fn))
+        builder.add_edge(START, agent_type)
+        builder.add_edge(agent_type, "aggregate")
+
     builder.add_node("aggregate", aggregate_node)
-
-    # START → 4개 에이전트 병렬 실행
-    builder.add_edge(START, "market_size")
-    builder.add_edge(START, "competitor")
-    builder.add_edge(START, "regulation")
-    builder.add_edge(START, "trend")
-
-    # 4개 에이전트 → 통합 노드
-    builder.add_edge("market_size", "aggregate")
-    builder.add_edge("competitor", "aggregate")
-    builder.add_edge("regulation", "aggregate")
-    builder.add_edge("trend", "aggregate")
-
-    # 통합 → END
     builder.add_edge("aggregate", END)
 
     return builder.compile()
