@@ -104,20 +104,42 @@ docs/                # 설계 문서
 
 ## 신뢰 소스 필터 (Trusted Sources)
 
+> **원칙**: URL fetch 본문 추출 가능한 무료 공개 소스만 포함. 유료 페이월 제외.
+> 제외 목록: bloomberg.com / ft.com / wsj.com / economist.com / gartner.com / idc.com
+
 ### 국내
 - 한경 컨센서스 (`consensus.hankyung.com`)
 - 네이버 금융 (`finance.naver.com`)
+- 미래에셋 리서치 (`securities.miraeasset.com`)
 - 매일경제 (`mk.co.kr`)
 - 한국경제 (`hankyung.com`)
 - 서울경제 (`sedaily.com`)
-- DART 사업보고서 (`dart.fss.or.kr`)
+- 조선비즈 (`biz.chosun.com`)
+- 머니투데이 (`news.mt.co.kr`)
+- DART 금융감독원 (`dart.fss.or.kr`)
+- KRX 전자공시 (`kind.krx.co.kr`)
+- 통계청 (`kostat.go.kr`)
+- 산업연구원 KIET (`kiet.re.kr`)
+- KDI 한국개발연구원 (`kdi.re.kr`)
+- 대외경제정책연구원 (`kiep.go.kr`)
 
 ### 해외
-- TechCrunch (`techcrunch.com`)
-- CoinDesk (`coindesk.com`)
-- Bloomberg (`bloomberg.com`)
-- Reuters (`reuters.com`)
-- Financial Times (`ft.com`)
+- Reuters (`reuters.com`) — 로이터 통신, 전면 무료
+- AP News (`apnews.com`) — AP 통신, 전면 무료
+- CNBC (`cnbc.com`) — 경제방송, 전면 무료
+- MarketWatch (`marketwatch.com`) — 전면 무료
+- TechCrunch (`techcrunch.com`) — 테크·스타트업
+- CoinDesk (`coindesk.com`) — 블록체인·핀테크
+- The Verge (`theverge.com`) — 테크·소비자전자
+- VentureBeat (`venturebeat.com`) — AI·테크 트렌드
+- WEF (`weforum.org`) — 세계경제포럼, 전면 무료
+- OECD (`oecd.org`) — 정책·통계 리포트, 전면 무료
+- IMF (`imf.org`) — 거시경제 리포트, 전면 무료
+- World Bank (`worldbank.org`) — 전면 무료
+- McKinsey Insights (`mckinsey.com`) — 무료 공개
+- BCG Insights (`bcg.com`) — 무료 공개
+- Deloitte Insights (`deloitte.com`) — 전면 무료
+- PwC Research (`pwc.com`) — 전면 무료
 
 ---
 
